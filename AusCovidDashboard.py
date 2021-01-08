@@ -19,7 +19,7 @@ import numpy as np
 from scipy.optimize import curve_fit
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
-
+import os
 
 # Pull data from John Hopkins University and organise into dataframe 
 df = pd.read_csv('https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv')
@@ -184,4 +184,5 @@ def update_graph(value,date_value):
     return plotCases(df, 'Province/State', value, date_value, True, 3)
 
 if __name__ == '__main__':
-    app.run_server(debug=False)
+    app.run(debug=True, port=int(os.environ.get("PORT", 5000)), host='0.0.0.0')
+    #app.run_server(debug=False)
