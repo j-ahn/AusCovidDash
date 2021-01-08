@@ -144,12 +144,12 @@ def plotCases(dataframe, column, state, start_date, curvefit, forecast):
     fig.update_xaxes(showline=True, linewidth=1, linecolor='black', mirror=True)
     fig.update_yaxes(showline=True, linewidth=1, linecolor='black', mirror=True)
     
-    fig.update_xaxes(title_text='Date',row=1,col=1)
-    fig.update_yaxes(title_text='Total confirmed cases since {0}'.format(start_date),row=1,col=1)
+    fig.update_xaxes(title_text='Date',fixedrange=True,row=1,col=1)
+    fig.update_yaxes(title_text='Total confirmed cases since {0}'.format(start_date),fixedrange=True,row=1,col=1)
     
-    fig.update_xaxes(title_text='Total confirmed cases since {0}'.format(start_date),range=[0,np.log10(max(y)+100)],type="log",row=1,col=2)
-    fig.update_yaxes(title_text='New daily cases',type="log",range=[0,np.log10(max(delta)+100)],row=1,col=2)
-        
+    fig.update_xaxes(title_text='Total confirmed cases since {0}'.format(start_date),range=[0,np.log10(max(y)+100)],type="log",fixedrange=True,row=1,col=2)
+    fig.update_yaxes(title_text='New daily cases',type="log",range=[0,np.log10(max(delta)+100)],fixedrange=True,row=1,col=2)
+    
     return fig
     
 aus_states = ['Queensland','New South Wales','Victoria','Western Australia','South Australia', 'Tasmania', 'Australian Capital Territory']
@@ -159,7 +159,7 @@ aus_states = ['Queensland','New South Wales','Victoria','Western Australia','Sou
 app.layout = html.Div([
     html.H1(children='Australia Covid-19 Dashboard',
             style={'textAlign': 'center','font-family':'Verdana','color': colors['text'],'padding-top': 20}),
-    html.P(children='''Dashboard configurations''',
+    html.P(children='''Graph settings''',
            style={'textAlign': 'center','font-size':24,'font-family':'Verdana','color': colors['text'],'padding-bottom': 10}),
     html.Div([html.Label(["State",dcc.Dropdown(id='state-select', options=[{'label': i, 'value': i} for i in aus_states],
                        value='Queensland', style={'width': '250px', 'display':'inline-block', 'margin-left':'10px','vertical-align':'middle'})])],
