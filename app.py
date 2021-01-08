@@ -19,7 +19,12 @@ import numpy as np
 from scipy.optimize import curve_fit
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
-import os
+
+# Initiate the app
+external_stylesheets = ["https://codepen.io/chriddyp/pen/bWLwgP.css"]
+app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
+server = app.server
+app.title = 'AusCovidDash'
 
 # Pull data from John Hopkins University and organise into dataframe 
 df = pd.read_csv('https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv')
@@ -145,10 +150,7 @@ def plotCases(dataframe, column, state, start_date, curvefit, forecast):
     
 aus_states = ['Queensland','New South Wales','Victoria','Western Australia','South Australia', 'Tasmania', 'Australian Capital Territory']
 
-external_stylesheets = ["https://codepen.io/chriddyp/pen/bWLwgP.css"]
-app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 
-server = app.server
 app.layout = html.Div([
     html.H1(children='Australia Covid-19 Dashboard'),
     html.Div(children='''Dashboard configurations'''),
@@ -184,5 +186,4 @@ def update_graph(value,date_value):
     return plotCases(df, 'Province/State', value, date_value, True, 3)
 
 if __name__ == '__main__':
-    app.run(debug=True, port=int(os.environ.get("PORT", 5000)), host='0.0.0.0')
-    #app.run_server(debug=False)
+    app.run_server(debug=True)
