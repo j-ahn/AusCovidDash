@@ -19,7 +19,6 @@ import numpy as np
 from scipy.optimize import curve_fit
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
-import os
 
 # Initiate the app
 external_stylesheets = ["https://codepen.io/chriddyp/pen/bWLwgP.css"]
@@ -64,8 +63,6 @@ def plotCases(dataframe, column, state, start_date, curvefit, forecast):
             color=colors['text']
         ))
 
-    #clean_chart_format(fig)
-    
     # PSM_ColorMap = [(0,0,0),
     #             (27/256,38/256,100/256),
     #             (245/256,130/256,100/256),
@@ -143,7 +140,7 @@ def plotCases(dataframe, column, state, start_date, curvefit, forecast):
     dbl_cases = 2**(x3/2)
     dbl_delta = 0.5*np.log(2)*np.exp((np.log(2)*x3)/2)
     fig.add_trace(go.Scatter(x=dbl_cases,y=dbl_delta,mode='lines',name='2 Day Doubling Time',line = {'color':'black','dash':'dash'}),row=1,col=2)
-    5
+    
     fig.update_xaxes(showline=True, linewidth=1, linecolor='black', mirror=True)
     fig.update_yaxes(showline=True, linewidth=1, linecolor='black', mirror=True)
     
@@ -165,7 +162,8 @@ app.layout = html.Div([
     html.P(children='''Dashboard configurations''',
            style={'textAlign': 'center','font-size':24,'font-family':'Verdana','color': colors['text'],'padding-bottom': 10}),
     html.Div([html.Label(["State",dcc.Dropdown(id='state-select', options=[{'label': i, 'value': i} for i in aus_states],
-                       value='Queensland', style={'width': '250px', 'display':'inline-block', 'margin-left':'10px','vertical-align':'middle'})])],style={'vertical-align':'middle','margin-top':'10px','font-size':10,'font-family':'Verdana','textAlign':'center','color':colors['text']}),
+                       value='Queensland', style={'width': '250px', 'display':'inline-block', 'margin-left':'10px','vertical-align':'middle'})])],
+             style={'vertical-align':'middle','margin-top':'10px','font-size':10,'font-family':'Verdana','textAlign':'center','color':colors['text']}),
     html.Div([
         html.Label(["Start Date",dcc.DatePickerSingle(id='my-date-picker-single',
         min_date_allowed=dtdate(2020, 1, 22),
@@ -196,5 +194,4 @@ def update_graph(value,date_value):
     return plotCases(df, 'Province/State', value, date_value, True, 3)
 
 if __name__ == '__main__':
-    app.run_server(debug=True)
-    #app.run_server()
+    app.run_server()
