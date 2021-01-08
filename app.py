@@ -26,6 +26,12 @@ app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 server = app.server
 app.title = 'AusCovidDash'
 
+colors = {
+    'background': '#000000',
+    'text': '#5d76a9',
+    'label': '#f5b112'
+}
+
 # Pull data from John Hopkins University and organise into dataframe 
 df = pd.read_csv('https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv')
 
@@ -48,13 +54,13 @@ def plotCases(dataframe, column, state, start_date, curvefit, forecast):
     fig.update_layout(autosize=True,margin={'t':30})
     #fig.update_layout(title='Australia Covid-19 Dashboard',title_font_size=30,title_x=0.5)     
     fig.update_layout(legend={'title':'Legend','bordercolor':'black','borderwidth':1})
-    fig.update_layout(legend_title_font=dict(family="Arial, Tahoma, Helvetica",size=16,color="#404040"))
+    fig.update_layout(legend_title_font=dict(family="Verdana",size=16,color=colors['text']))
     
     fig.update_layout(
         font=dict(
-            family="Arial, Tahoma, Helvetica",
+            family="Verdana",
             size=12,
-            color="#404040"
+            color=colors['text']
         ))
 
     #clean_chart_format(fig)
@@ -105,13 +111,13 @@ def plotCases(dataframe, column, state, start_date, curvefit, forecast):
     ss_tot = np.sum((y - np.mean(y))**2)
     logisticr2 = 1 - (ss_res / ss_tot)  
     
-    if logisticr2 > 0.1 and logisticr2 <= 1:
+    if logisticr2 >= 0 and logisticr2 <= 1:
         fig.add_trace(go.Scatter(x=date2,y=logistic(x2, *lpopt), mode='lines', name="Logistic (r2={0}) Td={1}d".format(round(logisticr2,2),round(ldoubletime,1)),line_color='rgba(245,130,100,.8)',line_shape='spline',line_dash='dash'),row=1,col=1)
     # -----------------------------------------------------------------------
     
     
     # Exponential regression--------------------------------------------------------------------
-    epopt, epcov = curve_fit(exponential, x, y, bounds=([0.99,0,-100],[1.01,0.9,100]), maxfev=10000)
+    epopt, epcov = curve_fit(exponential, x, y, bounds=([0.99,0,-0.001],[1.01,0.9,0.001]), maxfev=10000)
     #eerror = np.sqrt(np.diag(epcov))
     
     # for exponential curve, slope = growth rate. so doubling time = ln(2) / growth rate
@@ -125,7 +131,7 @@ def plotCases(dataframe, column, state, start_date, curvefit, forecast):
     ss_tot = np.sum((y - np.mean(y))**2)
     expr2 = 1 - (ss_res / ss_tot)
     
-    if expr2 > 0.1 and expr2 <= 1:
+    if expr2 >= 0 and expr2 <= 1:
         fig.add_trace(go.Scatter(x=date2,y=exponential(x2, *epopt), mode='lines', name="Exponential (r2={0}) Td={1}d".format(round(expr2,2),round(edoubletime,1)),line_color='rgba(134,200,230,.8)',line_shape='spline',line_dash='dash'),row=1,col=1)
     # --------------------------------------------------------------------
 
@@ -136,7 +142,7 @@ def plotCases(dataframe, column, state, start_date, curvefit, forecast):
     dbl_cases = 2**(x3/2)
     dbl_delta = 0.5*np.log(2)*np.exp((np.log(2)*x3)/2)
     fig.add_trace(go.Scatter(x=dbl_cases,y=dbl_delta,mode='lines',name='2 Day Doubling Time',line = {'color':'black','dash':'dash'}),row=1,col=2)
-    
+    5
     fig.update_xaxes(showline=True, linewidth=1, linecolor='black', mirror=True)
     fig.update_yaxes(showline=True, linewidth=1, linecolor='black', mirror=True)
     
@@ -151,17 +157,20 @@ def plotCases(dataframe, column, state, start_date, curvefit, forecast):
 aus_states = ['Queensland','New South Wales','Victoria','Western Australia','South Australia', 'Tasmania', 'Australian Capital Territory']
 
 
+
 app.layout = html.Div([
-    html.H1(children='Australia Covid-19 Dashboard'),
-    html.Div(children='''Dashboard configurations'''),
+    html.H1(children='Australia Covid-19 Dashboard',
+            style={'textAlign': 'center','font-family':'Verdana','color': colors['text'],'padding-top': 20}),
+    html.P(children='''Dashboard configurations''',
+           style={'textAlign': 'center','font-size':24,'font-family':'Verdana','color': colors['text'],'padding-bottom': 10}),
     html.Div([html.Label(["State",dcc.Dropdown(id='state-select', options=[{'label': i, 'value': i} for i in aus_states],
-                       value='Queensland', style={'width': '250px', 'display':'inline-block', 'margin-left':'10px','vertical-align':'middle'})])],style={'vertical-align':'middle','margin-top':'10px'}),
+                       value='Queensland', style={'width': '250px', 'display':'inline-block', 'margin-left':'10px','vertical-align':'middle'})])],style={'vertical-align':'middle','margin-top':'10px','font-size':10,'font-family':'Verdana','textAlign':'center','color':colors['text']}),
     html.Div([
         html.Label(["Start Date",dcc.DatePickerSingle(id='my-date-picker-single',
         min_date_allowed=dtdate(2020, 1, 22),
         max_date_allowed=(dtdate.today() - timedelta(days=7)),
         initial_visible_month=dtdate(2021, 1, 1),
-        date=dtdate(2021, 1, 1),style={'display':'inline-block', 'margin-left':'10px'})])],style={'vertical-align':'middle','margin-top':'10px'}),
+        date=dtdate(2021, 1, 1),style={'display':'inline-block', 'margin-left':'10px'})])],style={'vertical-align':'middle','margin-top':'10px','font-size':10,'font-family':'Verdana','textAlign':'center','color':colors['text']}),
     dcc.Graph('dashboard', figure={"layout" : {"height":600}},config={'displayModeBar': False}),
     html.Div(dcc.Markdown('''
         The total cases chart presents all COVID-19 cases in each state since the specified start date, as a function of time. Logistic and exponential regression indicates potential trajectories of growth.
@@ -173,8 +182,8 @@ app.layout = html.Div([
         
         Data provided by Johns Hopkins University (updated daily around 00:00 UTC / 20:00 ET)
         
-        [Github Repo](https://github.com/j-ahn/QldCovid)
-        '''))
+        [Github Repo](https://github.com/j-ahn/AusCovidDash)
+        '''), style = {'font-size':10,'font-family':'Verdana','textAlign':'center','color':colors['text']})
     ])
 
 @app.callback(
@@ -186,4 +195,4 @@ def update_graph(value,date_value):
     return plotCases(df, 'Province/State', value, date_value, True, 3)
 
 if __name__ == '__main__':
-    app.run_server(debug=True)
+    app.run_server(debug=False)
