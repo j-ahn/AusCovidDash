@@ -19,6 +19,7 @@ import numpy as np
 from scipy.optimize import curve_fit
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
+import os
 
 # Initiate the app
 external_stylesheets = ["https://codepen.io/chriddyp/pen/bWLwgP.css"]
@@ -195,4 +196,5 @@ def update_graph(value,date_value):
     return plotCases(df, 'Province/State', value, date_value, True, 3)
 
 if __name__ == '__main__':
-    app.run_server(debug=False)
+    app.run_server(debug=True)
+    #app.run_server()
