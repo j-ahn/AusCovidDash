@@ -17,17 +17,9 @@ from datetime import date as dtdate
 import pandas as pd
 import numpy as np
 from scipy.optimize import curve_fit
-import chart_studio
-import chart_studio.plotly as py
-import plotly.express as px
 import plotly.graph_objects as go
-import plotly.io as pio
 from plotly.subplots import make_subplots
 
-# Plotly credentials
-username = 'j-ahn'
-api_key = 'eoNF8mZbtyci47iTLmaq'
-chart_studio.tools.set_credentials_file(username=username,api_key=api_key)
 
 # Pull data from John Hopkins University and organise into dataframe 
 df = pd.read_csv('https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv')
