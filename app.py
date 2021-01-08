@@ -36,6 +36,7 @@ colors = {
 df = pd.read_csv('https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv')
 
 # Curve fitting Global COVID-19 Cases
+max_date = dtdate.today() - timedelta(days=7)
 
 def logistic(t, a, b, c, d):
     return c + (d - c)/(1 + a * np.exp(- b * t))
@@ -167,7 +168,7 @@ app.layout = html.Div([
     html.Div([
         html.Label(["Start Date",dcc.DatePickerSingle(id='my-date-picker-single',
         min_date_allowed=dtdate(2020, 1, 22),
-        max_date_allowed=(dtdate.today() - timedelta(days=7)),
+        max_date_allowed=(max_date),
         initial_visible_month=dtdate(2021, 1, 1),
         date=dtdate(2021, 1, 1),style={'display':'inline-block', 'margin-left':'10px'})])],style={'vertical-align':'middle','margin-top':'10px','font-size':10,'font-family':'Verdana','textAlign':'center','color':colors['text']}),
     dcc.Graph('dashboard', figure={"layout" : {"height":600}},config={'displayModeBar': False}),
@@ -182,7 +183,10 @@ app.layout = html.Div([
         Data provided by Johns Hopkins University (updated daily around 00:00 UTC / 20:00 ET)
         
         [Github Repo](https://github.com/j-ahn/AusCovidDash)
-        '''), style = {'font-size':10,'font-family':'Verdana','textAlign':'center','color':colors['text']})
+        
+        '''), style = {'font-size':10,'font-family':'Verdana','textAlign':'center','color':colors['text']}),
+    html.Div(children=('Last updated : {0}'.format(dtdate.today().strftime('%d-%B-%Y'))),
+             style = {'font-size':10,'font-family':'Verdana','textAlign':'center','color':colors['text']})
     ])
 
 @app.callback(
