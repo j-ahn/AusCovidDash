@@ -36,6 +36,7 @@ colors = {
 df = pd.read_csv('https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv')
 
 # Curve fitting Global COVID-19 Cases
+global max_date
 max_date = dtdate.today() - timedelta(days=7)
 
 def logistic(t, a, b, c, d):
@@ -195,6 +196,10 @@ app.layout = html.Div([
     [Input('my-date-picker-single','date')]
 )
 def update_graph(value,date_value):
+    global max_date
+    max_date = dtdate.today() - timedelta(days=7)
+    # Pull data from John Hopkins University and organise into dataframe 
+    df = pd.read_csv('https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv')
     return plotCases(df, 'Province/State', value, date_value, True, 3)
 
 if __name__ == '__main__':
